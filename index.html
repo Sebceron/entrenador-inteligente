@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Entrenador Inteligente</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <h1>Entrenador Inteligente</h1>
+  <select id="exerciseSelector">
+    <option value="curl">Curl de Bíceps</option>
+    <option value="squat">Sentadilla</option>
+  </select>
+
+  <video id="video" autoplay playsinline></video>
+  <canvas id="output"></canvas>
+
+  <div id="status"></div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/pose"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils"></script>
+  <script src="script.js"></script>
+</body>
+</html>
