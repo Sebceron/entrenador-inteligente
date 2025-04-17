@@ -1,60 +1,155 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>AIfit Coach - Tu entrenador con IA</title>
-  <link rel="stylesheet" href="style.css" />
-</head>
-<body>
-
-  <!-- HERO CON TÍTULO -->
-  <header class="hero-titulo">
-    <h1>CERON.AI COACH</h1>
-    <p>Tu entrenador personal potenciado por inteligencia artificial y computer vision</p>
-  </header>
-
-  <div class="glass-container">
-
-    <!-- INSTRUCCIONES -->
-    <div class="banner-instrucciones">
-      <h2>¿Cómo usar esta app?</h2>
-      <ol>
-        <li>Permite el acceso a la cámara.</li>
-        <li>Selecciona el ejercicio en el menú.</li>
-        <li>Ubícate de perfil izquierdo frente a la cámara.</li>
-        <li>Haz el movimiento completo: sube y baja el brazo.</li>
-        <li>La técnica debe ser buena (color verde) para contar la repetición.</li>
-        <li>Escucharás un sonido y verás <strong>+1</strong> si lo hiciste bien.</li>
-      </ol>
-    </div>
-
-    <!-- SELECTOR DE EJERCICIO -->
-    <select id="exerciseSelector">
-      <option value="curl">Curl de Bíceps</option>
-    </select>
-
-    <!-- CÁMARA OCULTA Y CANVAS VISUAL -->
-    <video id="video" autoplay playsinline style="display: none;"></video>
-    <canvas id="output"></canvas>
-    <canvas id="hiddenCanvas" style="display: none;"></canvas>
-
-    <!-- BARRA DE TÉCNICA -->
-    <div id="barra-tecnica">
-      <div id="relleno"></div>
-      <div id="porcentaje">0%</div>
-    </div>
-
-    <!-- CONTADOR Y ESTADO -->
-    <div id="status">Esperando...</div>
-    <div id="contador">Reps: 0</div>
-    <div id="debug"></div>
-
-  </div>
-
-  <!-- LIBRERÍAS DE MEDIAPIPE -->
-  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/pose/pose.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils/drawing_utils.js"></script>
-  <script src="script.js"></script>
-</body>
-</html>
+/* === FONDO CON IMAGEN === */
+body {
+    margin: 0;
+    background: url("images/IMG_7121.jpg") no-repeat center center fixed;
+    background-size: cover;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    min-height: 100vh;
+    padding: 20px 12px;
+    box-sizing: border-box;
+  }
+  
+  /* === HERO TÍTULO === */
+  .hero-titulo {
+    text-align: center;
+    width: 100%;
+    max-width: 500px;
+    margin-bottom: 20px;
+    color: #ffffff;
+    text-shadow: 0 2px 6px rgba(0,0,0,0.3);
+  }
+  
+  .hero-titulo h1 {
+    font-size: 2.2em;
+    font-weight: 900;
+    margin: 0;
+  }
+  
+  .hero-titulo p {
+    font-size: 1em;
+    font-weight: 400;
+    margin-top: 6px;
+  }
+  
+  /* === CONTENEDOR GLASS === */
+  .glass-container {
+    background: rgba(255, 255, 255, 0.15);
+    box-shadow: 0 8px 32px rgba(31, 38, 135, 0.37);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border-radius: 20px;
+    padding: 20px;
+    width: 100%;
+    max-width: 500px;
+    color: #1d1d1f;
+    text-align: center;
+  }
+  
+  /* === INSTRUCCIONES === */
+  .banner-instrucciones {
+    background: rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(10px);
+    border-radius: 14px;
+    padding: 16px;
+    margin-bottom: 20px;
+    text-align: left;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+  }
+  
+  .banner-instrucciones h2 {
+    font-size: 1.2em;
+    margin-bottom: 10px;
+    font-weight: 700;
+  }
+  
+  .banner-instrucciones ol {
+    padding-left: 18px;
+    margin: 0;
+  }
+  
+  .banner-instrucciones li {
+    font-size: 0.95em;
+    margin-bottom: 6px;
+    line-height: 1.4;
+  }
+  
+  /* === SELECTOR === */
+  select {
+    padding: 10px;
+    margin-bottom: 15px;
+    font-size: 1em;
+    border-radius: 12px;
+    border: none;
+    background-color: rgba(255, 255, 255, 0.7);
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    width: 100%;
+  }
+  
+  /* === VIDEO Y CANVAS === */
+  video, canvas {
+    width: 100%;
+    border-radius: 16px;
+    margin-top: 12px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+  }
+  
+  /* === BARRA DE TÉCNICA === */
+  #barra-tecnica {
+    margin: 20px 0;
+    height: 20px;
+    background: rgba(255, 255, 255, 0.25);
+    border-radius: 14px;
+    overflow: hidden;
+    position: relative;
+  }
+  
+  #relleno {
+    height: 100%;
+    width: 0%;
+    background: #00ff44;
+    transition: width 0.2s ease;
+  }
+  
+  #porcentaje {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    text-align: center;
+    line-height: 20px;
+    font-weight: bold;
+    font-size: 0.9em;
+    color: #1d1d1f;
+  }
+  
+  /* === TEXTO === */
+  #status {
+    font-weight: 700;
+    font-size: 1.2em;
+    margin-top: 18px;
+    color: #1d1d1f;
+  }
+  
+  #contador {
+    font-size: 2.2em;
+    font-weight: 800;
+    margin-top: 10px;
+    color: #00cc66;
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  }
+  
+  #debug {
+    font-size: 0.9em;
+    margin-top: 12px;
+    color: #444;
+    line-height: 1.5;
+  }
+  
+  /* === EFECTO +1 === */
+  @keyframes flotar {
+    0% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+    100% { transform: translate(-50%, -100%) scale(1.3); opacity: 0; }
+  }
