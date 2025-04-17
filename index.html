@@ -3,32 +3,56 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Entrenador Inteligente</title>
+  <title>AIfit Coach - Tu entrenador con IA</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
 
-  <div class="glass-container">
-    <h1>Entrenador Inteligente</h1>
+  <!-- HERO CON TÍTULO -->
+  <header class="hero-titulo">
+    <h1>CERON.AI COACH</h1>
+    <p>Tu entrenador personal potenciado por inteligencia artificial y computer vision</p>
+  </header>
 
+  <div class="glass-container">
+
+    <!-- INSTRUCCIONES -->
+    <div class="banner-instrucciones">
+      <h2>¿Cómo usar esta app?</h2>
+      <ol>
+        <li>Permite el acceso a la cámara.</li>
+        <li>Selecciona el ejercicio en el menú.</li>
+        <li>Ubícate de perfil izquierdo frente a la cámara.</li>
+        <li>Haz el movimiento completo: sube y baja el brazo.</li>
+        <li>La técnica debe ser buena (color verde) para contar la repetición.</li>
+        <li>Escucharás un sonido y verás <strong>+1</strong> si lo hiciste bien.</li>
+      </ol>
+    </div>
+
+    <!-- SELECTOR DE EJERCICIO -->
     <select id="exerciseSelector">
       <option value="curl">Curl de Bíceps</option>
     </select>
 
+    <!-- CÁMARA OCULTA Y CANVAS VISUAL -->
     <video id="video" autoplay playsinline style="display: none;"></video>
-    <canvas id="output"></canvas> 
+    <canvas id="output"></canvas>
     <canvas id="hiddenCanvas" style="display: none;"></canvas>
 
+    <!-- BARRA DE TÉCNICA -->
     <div id="barra-tecnica">
       <div id="relleno"></div>
       <div id="porcentaje">0%</div>
     </div>
 
+    <!-- CONTADOR Y ESTADO -->
     <div id="status">Esperando...</div>
     <div id="contador">Reps: 0</div>
     <div id="debug"></div>
+
   </div>
 
+  <!-- LIBRERÍAS DE MEDIAPIPE -->
   <script src="https://cdn.jsdelivr.net/npm/@mediapipe/pose/pose.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils/drawing_utils.js"></script>
   <script src="script.js"></script>
