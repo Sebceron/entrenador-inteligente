@@ -83,8 +83,8 @@ function detectarCurl(lm) {
 
   actualizarBarra(precision);
 
-  const estaEnArribaPerfecto = angulo >= 45 && angulo <= 55;
-  const estaEnAbajoPerfecto = angulo >= 145 && angulo <= 160;
+  const estaEnArribaPerfecto = angulo >= 40 && angulo <= 65;
+    const estaEnAbajoPerfecto = angulo >= 145 && angulo <= 160;
 
   debugDiv.innerHTML = `
     <strong>Ángulo:</strong> ${Math.round(angulo)}°<br>
