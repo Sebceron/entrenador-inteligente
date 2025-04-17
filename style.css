@@ -1,7 +1,7 @@
 /* === FONDO CON IMAGEN === */
 body {
     margin: 0;
-    background: url("images/fondo.jpg") no-repeat center center fixed;
+    background: url("images/IMG_7121.jpg") no-repeat center center fixed;
     background-size: cover;
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
     display: flex;
