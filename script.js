@@ -14,8 +14,7 @@ const debugDiv = document.getElementById('debug');
 let repeticiones = 0;
 let tiempoInicioFase = 0;
 let haSubidoPerfecto = false;
-const sonidoRepeticion = new Audio("audio/rep_ok_voice.mp3");
-
+const sonidoRepeticion = new Audio("assets/audio/rep_ok_voice.mp3");
 
 // === TIEMPO MÍNIMO ENTRE FASES ===
 function tiempoEnFaseMinimo(ms = 300) {
