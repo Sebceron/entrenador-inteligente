@@ -7,19 +7,30 @@
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <h1>Entrenador Inteligente</h1>
-  <select id="exerciseSelector">
-    <option value="curl">Curl de Bíceps</option>
-    <option value="squat">Sentadilla</option>
-  </select>
 
-  <video id="video" autoplay playsinline></video>
-  <canvas id="output"></canvas>
+  <div class="glass-container">
+    <h1>Entrenador Inteligente</h1>
 
-  <div id="status"></div>
+    <select id="exerciseSelector">
+      <option value="curl">Curl de Bíceps</option>
+    </select>
 
-  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/pose"></script>
-  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils"></script>
+    <video id="video" autoplay playsinline style="display: none;"></video>
+    <canvas id="output"></canvas> 
+    <canvas id="hiddenCanvas" style="display: none;"></canvas>
+
+    <div id="barra-tecnica">
+      <div id="relleno"></div>
+      <div id="porcentaje">0%</div>
+    </div>
+
+    <div id="status">Esperando...</div>
+    <div id="contador">Reps: 0</div>
+    <div id="debug"></div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/pose/pose.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils/drawing_utils.js"></script>
   <script src="script.js"></script>
 </body>
 </html>
