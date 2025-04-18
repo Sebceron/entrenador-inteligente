@@ -9,7 +9,7 @@ body {
   align-items: center;
   justify-content: flex-start;
   overflow-x: hidden;
-  background: 
+  background:
     linear-gradient(rgba(0, 0, 0, 0.35), rgba(0, 0, 0, 0.35)),
     url("assets/images/IMG_7123.jpg") no-repeat center center fixed;
   background-size: cover;
@@ -19,22 +19,20 @@ body {
 /* === HERO TÍTULO === */
 .hero-titulo {
   text-align: center;
-  width: 100%;
   max-width: 500px;
-  margin-bottom: 20px;
+  margin: 24px 0 16px;
   color: #ffffff;
-  text-shadow: 0 2px 6px rgba(0,0,0,0.3);
+  text-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
 }
 
 .hero-titulo h1 {
-  font-size: 2.2em;
+  font-size: 2.3em;
   font-weight: 900;
   margin: 0;
 }
 
 .hero-titulo p {
   font-size: 1em;
-  font-weight: 400;
   margin-top: 6px;
 }
 
@@ -43,10 +41,9 @@ body {
   background: rgba(255, 255, 255, 0.15);
   box-shadow: 0 8px 32px rgba(31, 38, 135, 0.37);
   backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
   border-radius: 20px;
   padding: 20px;
-  width: 100%;
+  width: 95%;
   max-width: 500px;
   color: #1d1d1f;
   text-align: center;
@@ -88,7 +85,7 @@ select {
   border-radius: 12px;
   border: none;
   background-color: rgba(255, 255, 255, 0.7);
-  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
   width: 100%;
 }
 
@@ -97,7 +94,7 @@ video, canvas {
   width: 100%;
   border-radius: 16px;
   margin-top: 12px;
-  box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
 }
 
 /* === BARRA DE TÉCNICA === */
@@ -128,22 +125,25 @@ video, canvas {
   color: #1d1d1f;
 }
 
-/* === TEXTO === */
+/* === TEXTO DE ESTADO === */
 #status {
   font-weight: 700;
   font-size: 1.2em;
   margin-top: 18px;
   color: #00cc66;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
 }
 
+/* === CONTADOR === */
 #contador {
-  font-size: 2.2em;
+  font-size: 2.5em;
   font-weight: 800;
-  margin-top: 10px;
+  margin-top: 8px;
   color: #00cc66;
-  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
 }
 
+/* === DEBUG === */
 #debug {
   font-size: 1em;
   margin-top: 12px;
@@ -152,11 +152,6 @@ video, canvas {
 }
 
 /* === EFECTO +1 === */
-@keyframes flotar {
-  0% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
-  100% { transform: translate(-50%, -100%) scale(1.3); opacity: 0; }
-}
-
 .repeticion-float {
   position: absolute;
   top: 60%;
@@ -172,7 +167,7 @@ video, canvas {
   z-index: 999;
 }
 
-/* === RESPONSIVE DESIGN === */
+/* === MEDIA QUERY PARA MÓVIL === */
 @media (max-width: 600px) {
   body {
     padding: 16px;
@@ -196,12 +191,15 @@ video, canvas {
     margin-bottom: 16px;
   }
 
-  #status,
-  #debug {
+  #status {
     font-size: 1.1em;
   }
 
   #contador {
-    font-size: 2.4em;
+    font-size: 2em;
+  }
+
+  #debug {
+    font-size: 0.9em;
   }
 }

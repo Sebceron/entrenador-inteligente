@@ -5,6 +5,11 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="description" content="Ceron.AI Coach - Entrenador virtual inteligente con visión por computadora en tiempo real. Sigue tus repeticiones y corrige tu técnica.">
   <meta name="author" content="Ceron.AI">
+  <meta name="theme-color" content="#1c1c1e" />
+  <meta property="og:title" content="Ceron.AI Coach - Tu entrenador con IA" />
+  <meta property="og:description" content="Entrena como un pro con visión por computadora en tiempo real y corrección técnica inteligente." />
+  <meta property="og:image" content="assets/images/preview.jpg" />
+  <meta property="og:type" content="website" />
   <title>Ceron.AI Coach - Entrenador Inteligente</title>
   <link rel="stylesheet" href="style.css" />
   <link rel="icon" type="image/png" href="assets/images/favicon.png" />
@@ -18,10 +23,10 @@
   </header>
 
   <!-- BLOQUE GLASS UI PRINCIPAL -->
-  <div class="glass-container">
+  <main class="glass-container" role="main">
 
     <!-- GUÍA DE USO -->
-    <div class="banner-instrucciones">
+    <section class="banner-instrucciones" aria-label="Guía de uso">
       <h2>¿Cómo usar esta app?</h2>
       <ol>
         <li>Permite el acceso a la cámara.</li>
@@ -31,10 +36,11 @@
         <li>La técnica debe ser buena (color verde) para contar la repetición.</li>
         <li>Escucharás un sonido y verás <strong>+1</strong> si lo hiciste bien.</li>
       </ol>
-    </div>
+    </section>
 
     <!-- DROPDOWN DE EJERCICIOS -->
-    <select id="exerciseSelector">
+    <label for="exerciseSelector" style="display:none;">Selecciona ejercicio</label>
+    <select id="exerciseSelector" aria-label="Selector de ejercicio">
       <option value="curl">Curl de Bíceps</option>
     </select>
 
@@ -44,17 +50,17 @@
     <canvas id="hiddenCanvas" style="display: none;"></canvas>
 
     <!-- BARRA DE TÉCNICA -->
-    <div id="barra-tecnica">
+    <div id="barra-tecnica" aria-label="Precisión técnica">
       <div id="relleno"></div>
       <div id="porcentaje">0%</div>
     </div>
 
     <!-- ESTADO Y REPETICIONES -->
-    <div id="status">Esperando...</div>
-    <div id="contador">Reps: 0</div>
+    <div id="status" role="status">Esperando...</div>
+    <div id="contador" aria-live="polite">Reps: 0</div>
     <div id="debug"></div>
 
-  </div>
+  </main>
 
   <!-- LIBRERÍAS DE MEDIAPIPE -->
   <script src="https://cdn.jsdelivr.net/npm/@mediapipe/pose/pose.js"></script>

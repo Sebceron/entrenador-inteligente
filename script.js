@@ -7,54 +7,55 @@ const hiddenCtx = hiddenCanvas.getContext('2d');
 const statusDiv = document.getElementById('status');
 const contadorDiv = document.getElementById('contador');
 const porcentajeDiv = document.getElementById('porcentaje');
-const exerciseSelector = document.getElementById('exerciseSelector');
 const debugDiv = document.getElementById('debug');
 
 // === ESTADO GLOBAL ===
 let repeticiones = 0;
-let tiempoInicioFase = 0;
 let haSubidoPerfecto = false;
+let tiempoInicioFase = 0;
+let cuerpoDetectado = false;
 let posicionInicialDetectada = false;
 let posicionCodoInicial = null;
 
-// === AUDIO DE REPETICIÓN CORREGIDO ===
+// === AUDIO ===
 const sonidoRepeticion = new Audio("assets/Audio/rep_ok_voice.mp3");
 
-// === TIEMPO MÍNIMO ENTRE FASES ===
-function tiempoEnFaseMinimo(ms = 300) {
+// === FUNCIONES BASE ===
+function tiempoEnFaseMinimo(ms = 400) {
   return Date.now() - tiempoInicioFase > ms;
 }
 
-// === CALCULAR ÁNGULO ENTRE 3 PUNTOS ===
 function calcularAngulo(a, b, c) {
   const ab = { x: a.x - b.x, y: a.y - b.y, z: a.z - b.z };
   const cb = { x: c.x - b.x, y: c.y - b.y, z: c.z - b.z };
   const dot = ab.x * cb.x + ab.y * cb.y + ab.z * cb.z;
-  const magAB = Math.sqrt(ab.x**2 + ab.y**2 + ab.z**2);
-  const magCB = Math.sqrt(cb.x**2 + cb.y**2 + cb.z**2);
+  const magAB = Math.sqrt(ab.x ** 2 + ab.y ** 2 + ab.z ** 2);
+  const magCB = Math.sqrt(cb.x ** 2 + cb.y ** 2 + cb.z ** 2);
   return Math.acos(dot / (magAB * magCB)) * (180 / Math.PI);
 }
 
-// === ACTUALIZAR BARRA DE TÉCNICA ===
 function actualizarBarra(precision) {
   const relleno = document.getElementById("relleno");
   const porcentaje = document.getElementById("porcentaje");
+
   relleno.style.width = `${precision}%`;
   porcentaje.innerText = `${precision}%`;
 
   if (precision >= 90) {
-    relleno.style.backgroundColor = "#00ff44";
-    relleno.style.boxShadow = "0 0 10px #00ff44";
-  } else if (precision >= 70) {
-    relleno.style.backgroundColor = "#ffaa00";
-    relleno.style.boxShadow = "0 0 10px #ffaa00";
+    relleno.style.backgroundColor = "#00ff44"; // verde
+    relleno.style.boxShadow = "0 0 12px #00ff44";
+  } else if (precision >= 75) {
+    relleno.style.backgroundColor = "#ffaa00"; // amarillo
+    relleno.style.boxShadow = "0 0 12px #ffaa00";
+  } else if (precision >= 60) {
+    relleno.style.backgroundColor = "#ff7700"; // naranja
+    relleno.style.boxShadow = "0 0 12px #ff7700";
   } else {
-    relleno.style.backgroundColor = "#ff1a1a";
-    relleno.style.boxShadow = "0 0 10px #ff1a1a";
+    relleno.style.backgroundColor = "#ff1a1a"; // rojo
+    relleno.style.boxShadow = "0 0 12px #ff1a1a";
   }
 }
 
-// === MOSTRAR "+N" VISUAL ===
 function mostrarRepeticionVisual() {
   const rep = document.createElement("div");
   rep.innerText = `+${repeticiones}`;
@@ -69,8 +70,6 @@ function mostrarRepeticionVisual() {
   setTimeout(() => rep.remove(), 1500);
 }
 
-
-// === DETECCIÓN CURL BÍCEPS ===
 function detectarCurl(lm) {
   const hombro = lm[11];
   const codo = lm[13];
@@ -79,37 +78,57 @@ function detectarCurl(lm) {
   const angulo = calcularAngulo(hombro, codo, muñeca);
   let precision = 0;
 
-  // === Determinar precisión y color
-  if (angulo >= 45 && angulo <= 60) precision = 100;         // Contracción máxima
-  else if (angulo > 60 && angulo <= 140) precision = 85;     // Movimiento funcional
-  else if (angulo > 140 && angulo <= 165) precision = 60;    // Abajo seguro
-  else precision = 25;                                       // Peligroso (hiperextensión)
+  if (angulo >= 45 && angulo <= 55) precision = 100;
+  else if (angulo > 55 && angulo <= 140) precision = 85;
+  else if (angulo > 30 && angulo <= 150) precision = 60;
+  else precision = 25;
 
   actualizarBarra(precision);
 
-  const estaArribaPerfecto = angulo >= 45 && angulo <= 60 && precision >= 90;
-  const estaAbajoSeguro = angulo >= 145 && angulo <= 165;
-  const estaEnHiperextension = angulo > 165;
+  const estaEnArribaPerfecto = angulo >= 40 && angulo <= 65;
+  const estaEnAbajoPerfecto = angulo >= 145 && angulo <= 160;
 
-  // === Mostrar en debug
+  if (!posicionInicialDetectada && estaEnAbajoPerfecto && precision >= 60) {
+    posicionInicialDetectada = true;
+    posicionCodoInicial = { x: codo.x, y: codo.y };
+    statusDiv.innerText = "¡Posición inicial detectada! Puedes comenzar.";
+    return;
+  }
+
+  if (!posicionInicialDetectada) {
+    statusDiv.innerText = "Ubícate con el brazo extendido para iniciar.";
+    return;
+  }
+
+  let movimientoCodo = 0;
+  let tecnicaValida = true;
+
+  if (posicionCodoInicial) {
+    const dx = Math.abs(codo.x - posicionCodoInicial.x);
+    const dy = Math.abs(codo.y - posicionCodoInicial.y);
+    movimientoCodo = Math.sqrt(dx * dx + dy * dy);
+    if (movimientoCodo > 0.08) {
+      tecnicaValida = false;
+    }
+  }
+
   debugDiv.innerHTML = `
     <strong>Ángulo:</strong> ${Math.round(angulo)}°<br>
     <strong>Precisión:</strong> ${precision}%<br>
-    <strong>¿Arriba Perfecto?:</strong> ${estaArribaPerfecto ? 'Sí' : 'No'}<br>
-    <strong>¿Abajo Seguro?:</strong> ${estaAbajoSeguro ? 'Sí' : 'No'}<br>
-    <strong>¿Hiperextendido?:</strong> ${estaEnHiperextension ? 'Sí' : 'No'}<br>
-    <strong>Subida previa:</strong> ${haSubidoPerfecto ? 'Sí' : 'No'}
+    <strong>¿Arriba Perfecto?:</strong> ${estaEnArribaPerfecto ? 'Sí' : 'No'}<br>
+    <strong>¿Abajo Perfecto?:</strong> ${estaEnAbajoPerfecto ? 'Sí' : 'No'}<br>
+    <strong>Movimiento codo:</strong> ${movimientoCodo.toFixed(3)}<br>
+    <strong>Técnica válida:</strong> ${tecnicaValida ? 'Sí' : 'No'}<br>
+    <strong>Estado subida previa:</strong> ${haSubidoPerfecto ? 'Sí' : 'No'}
   `;
 
-  // === Iniciar fase subida
-  if (estaArribaPerfecto && tiempoEnFaseMinimo(400)) {
+  if (estaEnArribaPerfecto && tecnicaValida && tiempoEnFaseMinimo(400)) {
     haSubidoPerfecto = true;
     tiempoInicioFase = Date.now();
-    statusDiv.innerText = "Mantén posición – baja controlado";
+    statusDiv.innerText = "Subida perfecta – ahora baja";
   }
 
-  // === Fase bajada y contar
-  if (haSubidoPerfecto && estaAbajoSeguro && tiempoEnFaseMinimo(400)) {
+  if (haSubidoPerfecto && estaEnAbajoPerfecto && tecnicaValida && tiempoEnFaseMinimo(400)) {
     repeticiones++;
     contadorDiv.innerText = `Reps: ${repeticiones}`;
     mostrarRepeticionVisual();
@@ -119,72 +138,82 @@ function detectarCurl(lm) {
     tiempoInicioFase = Date.now();
   }
 
-  // === Feedback visual en el punto del codo
-  let color = "#ff1a1a"; // Rojo por defecto
-  if (estaEnHiperextension) color = "#ff0033"; // Rojo peligro
-  else if (precision >= 90) color = "#00ff44"; // Verde perfecta
-  else if (precision >= 70) color = "#ffaa00"; // Amarillo técnica aceptable
+    // === Visual feedback en el codo según precisión y técnica ===
+    let color = "#ff1a1a"; // Rojo por defecto
 
-  canvasCtx.beginPath();
-  canvasCtx.arc(codo.x * canvasElement.width, codo.y * canvasElement.height, 16, 0, 2 * Math.PI);
-  canvasCtx.fillStyle = color;
-  canvasCtx.shadowColor = color;
-  canvasCtx.shadowBlur = 15;
-  canvasCtx.fill();
-}
-
-// === PROCESAR RESULTADOS DE POSE ===
-function onResults(results) {
-  canvasElement.width = videoElement.videoWidth;
-  canvasElement.height = videoElement.videoHeight;
-
-  canvasCtx.save();
-  canvasCtx.clearRect(0, 0, canvasElement.width, canvasElement.height);
-  canvasCtx.drawImage(results.image, 0, 0, canvasElement.width, canvasElement.height);
-
-  if (results.poseLandmarks) {
-    detectarCurl(results.poseLandmarks);  // Aplica la lógica de técnica
-    drawConnectors(canvasCtx, results.poseLandmarks, POSE_CONNECTIONS, {
-      color: '#00FF00',
-      lineWidth: 2
-    });
-  } else {
-    statusDiv.innerText = "No se detecta cuerpo.";
+    if (precision >= 90 && tecnicaValida) color = "#00ff44";      // Verde
+    else if (precision >= 75 && tecnicaValida) color = "#ffaa00"; // Amarillo
+    else if (precision >= 60 && tecnicaValida) color = "#ff7700"; // Naranja
+  
+    canvasCtx.beginPath();
+    canvasCtx.arc(codo.x * canvasElement.width, codo.y * canvasElement.height, 16, 0, 2 * Math.PI);
+    canvasCtx.fillStyle = color;
+    canvasCtx.shadowColor = color;
+    canvasCtx.shadowBlur = 15;
+    canvasCtx.fill();
   }
-
-  canvasCtx.restore();
-}
-
-// === CONFIGURAR MEDIA PIPE POSE ===
-const pose = new Pose({
-  locateFile: (file) => `https://cdn.jsdelivr.net/npm/@mediapipe/pose/${file}`
-});
-pose.setOptions({
-  modelComplexity: 1,
-  smoothLandmarks: true,
-  enableSegmentation: false,
-  minDetectionConfidence: 0.5,
-  minTrackingConfidence: 0.5
-});
-pose.onResults(onResults);
-
-// === INICIAR CÁMARA Y LOOP OCULTO ===
-navigator.mediaDevices.getUserMedia({ video: true }).then((stream) => {
-  videoElement.srcObject = stream;
-
-  videoElement.onloadedmetadata = () => {
-    videoElement.play();
-
-    const loop = async () => {
-      hiddenCanvas.width = videoElement.videoWidth;
-      hiddenCanvas.height = videoElement.videoHeight;
-      hiddenCtx.drawImage(videoElement, 0, 0, hiddenCanvas.width, hiddenCanvas.height);
-      await pose.send({ image: hiddenCanvas });
-      requestAnimationFrame(loop);
+  
+  // === PROCESAR RESULTADOS DE MEDIA PIPE ===
+  function onResults(results) {
+    canvasElement.width = videoElement.videoWidth;
+    canvasElement.height = videoElement.videoHeight;
+  
+    canvasCtx.save();
+    canvasCtx.clearRect(0, 0, canvasElement.width, canvasElement.height);
+    canvasCtx.drawImage(results.image, 0, 0, canvasElement.width, canvasElement.height);
+  
+    if (results.poseLandmarks) {
+      const lm = results.poseLandmarks;
+      const visible = lm[11].visibility > 0.6 && lm[13].visibility > 0.6 && lm[15].visibility > 0.6;
+  
+      if (!visible) {
+        statusDiv.innerText = "No se detecta bien el cuerpo – acércate o mejora la luz.";
+        actualizarBarra(0);
+        return;
+      }
+  
+      detectarCurl(lm);
+  
+      drawConnectors(canvasCtx, lm, POSE_CONNECTIONS, {
+        color: '#00FF00',
+        lineWidth: 2
+      });
+  
+    } else {
+      statusDiv.innerText = "Esperando detección...";
+      actualizarBarra(0);
+    }
+  
+    canvasCtx.restore();
+  }
+  
+  // === CONFIGURACIÓN DE MEDIA PIPE POSE ===
+  const pose = new Pose({
+    locateFile: (file) => `https://cdn.jsdelivr.net/npm/@mediapipe/pose/${file}`
+  });
+  pose.setOptions({
+    modelComplexity: 1,
+    smoothLandmarks: true,
+    enableSegmentation: false,
+    minDetectionConfidence: 0.5,
+    minTrackingConfidence: 0.5
+  });
+  pose.onResults(onResults);
+  
+  // === INICIAR CÁMARA Y LOOP ===
+  navigator.mediaDevices.getUserMedia({ video: true }).then((stream) => {
+    videoElement.srcObject = stream;
+    videoElement.onloadedmetadata = () => {
+      videoElement.play();
+      const loop = async () => {
+        hiddenCanvas.width = videoElement.videoWidth;
+        hiddenCanvas.height = videoElement.videoHeight;
+        hiddenCtx.drawImage(videoElement, 0, 0, hiddenCanvas.width, hiddenCanvas.height);
+        await pose.send({ image: hiddenCanvas });
+        requestAnimationFrame(loop);
+      };
+      loop();
     };
-
-    loop();
-  };
-}).catch((err) => {
-  alert("Error accediendo a la cámara: " + err.message);
-});
+  }).catch((err) => {
+    alert("Error accediendo a la cámara: " + err.message);
+  });
