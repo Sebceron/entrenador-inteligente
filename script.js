@@ -55,18 +55,18 @@ function actualizarBarra(precision) {
 // === MOSTRAR "+1" VISUAL ===
 function mostrarRepeticionVisual() {
   const rep = document.createElement("div");
-  rep.innerText = "+1";
-  rep.style.position = "absolute";
-  rep.style.top = "60%";
-  rep.style.left = "50%";
-  rep.style.transform = "translate(-50%, -50%)";
-  rep.style.fontSize = "2em";
-  rep.style.color = "#00ff00";
-  rep.style.animation = "flotar 1s ease-out";
-  rep.style.pointerEvents = "none";
+  rep.innerText = `+${repeticiones}`;
+  rep.className = "repeticion-float";
   document.body.appendChild(rep);
-  setTimeout(() => rep.remove(), 1000);
+
+  setTimeout(() => {
+    rep.style.opacity = "0";
+    rep.style.transform = "translate(-50%, -120%) scale(1.3)";
+  }, 50);
+
+  setTimeout(() => rep.remove(), 1500);
 }
+
 
 // === DETECCIÓN CURL BÍCEPS ===
 function detectarCurl(lm) {
