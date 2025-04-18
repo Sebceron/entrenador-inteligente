@@ -1,5 +1,4 @@
 // === modules/utils.js ===
-// Funciones utilitarias para cálculos geométricos y temporales
 
 export function calcularAngulo(a, b, c) {
     const ab = { x: a.x - b.x, y: a.y - b.y, z: a.z - b.z };
@@ -10,6 +9,6 @@ export function calcularAngulo(a, b, c) {
     return Math.acos(dot / (magAB * magCB)) * (180 / Math.PI);
   }
   
-  export function tiempoEnFaseMinimo(ms, inicio) {
-    return Date.now() - inicio > ms;
+  export function distanciaEntre(p1, p2) {
+    return Math.sqrt((p1.x - p2.x)**2 + (p1.y - p2.y)**2);
   }
