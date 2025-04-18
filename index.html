@@ -3,21 +3,24 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>AIfit Coach - Tu entrenador con IA</title>
+  <meta name="description" content="Ceron.AI Coach - Entrenador virtual inteligente con visión por computadora en tiempo real. Sigue tus repeticiones y corrige tu técnica.">
+  <meta name="author" content="Ceron.AI">
+  <title>Ceron.AI Coach - Entrenador Inteligente</title>
   <link rel="stylesheet" href="style.css" />
+  <link rel="icon" type="image/png" href="assets/images/favicon.png" />
 </head>
 <body>
 
-  <!-- HERO CON TÍTULO -->
+  <!-- TÍTULO PRINCIPAL -->
   <header class="hero-titulo">
     <h1>CERON.AI COACH</h1>
-    <p>Tu entrenador personal potenciado por inteligencia artificial y computer vision</p>
+    <p>Tu entrenador personal potenciado por inteligencia artificial y visión por computadora</p>
   </header>
 
-  <!-- CONTENEDOR GLASS -->
+  <!-- BLOQUE GLASS UI PRINCIPAL -->
   <div class="glass-container">
 
-    <!-- INSTRUCCIONES -->
+    <!-- GUÍA DE USO -->
     <div class="banner-instrucciones">
       <h2>¿Cómo usar esta app?</h2>
       <ol>
@@ -30,12 +33,12 @@
       </ol>
     </div>
 
-    <!-- SELECTOR DE EJERCICIO -->
+    <!-- DROPDOWN DE EJERCICIOS -->
     <select id="exerciseSelector">
       <option value="curl">Curl de Bíceps</option>
     </select>
 
-    <!-- VIDEO Y CANVAS -->
+    <!-- STREAMING Y VISUALIZACIÓN -->
     <video id="video" autoplay playsinline style="display: none;"></video>
     <canvas id="output"></canvas>
     <canvas id="hiddenCanvas" style="display: none;"></canvas>
@@ -46,18 +49,18 @@
       <div id="porcentaje">0%</div>
     </div>
 
-    <!-- CONTADOR Y ESTADO -->
+    <!-- ESTADO Y REPETICIONES -->
     <div id="status">Esperando...</div>
     <div id="contador">Reps: 0</div>
     <div id="debug"></div>
 
   </div>
 
-  <!-- LIBRERÍAS DE MEDIA PIPE -->
+  <!-- LIBRERÍAS DE MEDIAPIPE -->
   <script src="https://cdn.jsdelivr.net/npm/@mediapipe/pose/pose.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils/drawing_utils.js"></script>
 
-  <!-- SCRIPT PRINCIPAL MODULAR -->
+  <!-- SCRIPT MODULAR -->
   <script type="module" src="script.js"></script>
 </body>
 </html>

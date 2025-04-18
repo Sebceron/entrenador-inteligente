@@ -13,7 +13,7 @@ body {
     linear-gradient(rgba(0, 0, 0, 0.35), rgba(0, 0, 0, 0.35)),
     url("assets/images/IMG_7123.jpg") no-repeat center center fixed;
   background-size: cover;
-  background-color: #1c1c1e; /* fallback color */
+  background-color: #1c1c1e;
 }
 
 /* === HERO TÍTULO === */
@@ -133,7 +133,7 @@ video, canvas {
   font-weight: 700;
   font-size: 1.2em;
   margin-top: 18px;
-  color: #1d1d1f;
+  color: #00cc66;
 }
 
 #contador {
@@ -145,9 +145,9 @@ video, canvas {
 }
 
 #debug {
-  font-size: 0.9em;
+  font-size: 1em;
   margin-top: 12px;
-  color: #444;
+  color: #00cc66;
   line-height: 1.5;
 }
 
@@ -157,7 +157,22 @@ video, canvas {
   100% { transform: translate(-50%, -100%) scale(1.3); opacity: 0; }
 }
 
+.repeticion-float {
+  position: absolute;
+  top: 60%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(1);
+  font-size: 2.2em;
+  font-weight: 700;
+  color: #00ff44;
+  text-shadow: 0 0 10px rgba(0, 255, 0, 0.5);
+  opacity: 1;
+  transition: all 1.2s ease-out;
+  pointer-events: none;
+  z-index: 999;
+}
 
+/* === RESPONSIVE DESIGN === */
 @media (max-width: 600px) {
   body {
     padding: 16px;
@@ -181,31 +196,12 @@ video, canvas {
     margin-bottom: 16px;
   }
 
-  #status {
-    font-size: 1em;
+  #status,
+  #debug {
+    font-size: 1.1em;
   }
 
   #contador {
-    font-size: 1.8em;
+    font-size: 2.4em;
   }
-
-  #debug {
-    font-size: 0.75em;
-  }
-}
-
-
-.repeticion-float {
-  position: absolute;
-  top: 60%;
-  left: 50%;
-  transform: translate(-50%, -50%) scale(1);
-  font-size: 2.2em;
-  font-weight: 700;
-  color: #00ff44;
-  text-shadow: 0 0 10px rgba(0, 255, 0, 0.5);
-  opacity: 1;
-  transition: all 1.2s ease-out;
-  pointer-events: none;
-  z-index: 999;
 }
