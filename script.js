@@ -13,7 +13,6 @@ const debugDiv = document.getElementById('debug');
 let repeticiones = 0;
 let haSubidoPerfecto = false;
 let tiempoInicioFase = 0;
-let cuerpoDetectado = false;
 let posicionInicialDetectada = false;
 let posicionCodoInicial = null;
 
@@ -42,16 +41,16 @@ function actualizarBarra(precision) {
   porcentaje.innerText = `${precision}%`;
 
   if (precision >= 90) {
-    relleno.style.backgroundColor = "#00ff44"; // verde
+    relleno.style.backgroundColor = "#00ff44";
     relleno.style.boxShadow = "0 0 12px #00ff44";
   } else if (precision >= 75) {
-    relleno.style.backgroundColor = "#ffaa00"; // amarillo
+    relleno.style.backgroundColor = "#ffaa00";
     relleno.style.boxShadow = "0 0 12px #ffaa00";
   } else if (precision >= 60) {
-    relleno.style.backgroundColor = "#ff7700"; // naranja
+    relleno.style.backgroundColor = "#ff7700";
     relleno.style.boxShadow = "0 0 12px #ff7700";
   } else {
-    relleno.style.backgroundColor = "#ff1a1a"; // rojo
+    relleno.style.backgroundColor = "#ff1a1a";
     relleno.style.boxShadow = "0 0 12px #ff1a1a";
   }
 }
@@ -73,9 +72,9 @@ function mostrarRepeticionVisual() {
 function detectarCurl(lm) {
   const hombro = lm[11];
   const codo = lm[13];
-  const muñeca = lm[15];
+  const muneca = lm[15]; // ← corrección nombre
 
-  const angulo = calcularAngulo(hombro, codo, muñeca);
+  const angulo = calcularAngulo(hombro, codo, muneca);
   let precision = 0;
 
   if (angulo >= 45 && angulo <= 55) precision = 100;
@@ -92,6 +91,8 @@ function detectarCurl(lm) {
     posicionInicialDetectada = true;
     posicionCodoInicial = { x: codo.x, y: codo.y };
     statusDiv.innerText = "¡Posición inicial detectada! Puedes comenzar.";
+    statusDiv.classList.add("actualizado");
+    setTimeout(() => statusDiv.classList.remove("actualizado"), 400);
     return;
   }
 
@@ -107,9 +108,7 @@ function detectarCurl(lm) {
     const dx = Math.abs(codo.x - posicionCodoInicial.x);
     const dy = Math.abs(codo.y - posicionCodoInicial.y);
     movimientoCodo = Math.sqrt(dx * dx + dy * dy);
-    if (movimientoCodo > 0.08) {
-      tecnicaValida = false;
-    }
+    if (movimientoCodo > 0.08) tecnicaValida = false;
   }
 
   debugDiv.innerHTML = `
@@ -122,98 +121,119 @@ function detectarCurl(lm) {
     <strong>Estado subida previa:</strong> ${haSubidoPerfecto ? 'Sí' : 'No'}
   `;
 
+  // Subida
   if (estaEnArribaPerfecto && tecnicaValida && tiempoEnFaseMinimo(400)) {
     haSubidoPerfecto = true;
     tiempoInicioFase = Date.now();
     statusDiv.innerText = "Subida perfecta – ahora baja";
+    statusDiv.classList.add("actualizado");
+    setTimeout(() => statusDiv.classList.remove("actualizado"), 400);
   }
 
+  // Bajada
   if (haSubidoPerfecto && estaEnAbajoPerfecto && tecnicaValida && tiempoEnFaseMinimo(400)) {
     repeticiones++;
     contadorDiv.innerText = `Reps: ${repeticiones}`;
     mostrarRepeticionVisual();
     sonidoRepeticion.play();
     statusDiv.innerText = "¡Repetición contada!";
+    statusDiv.classList.add("actualizado");
+    setTimeout(() => statusDiv.classList.remove("actualizado"), 400);
     haSubidoPerfecto = false;
     tiempoInicioFase = Date.now();
   }
 
-    // === Visual feedback en el codo según precisión y técnica ===
-    let color = "#ff1a1a"; // Rojo por defecto
+  // Visual feedback en el codo
+  let color = "#ff1a1a";
+  if (precision >= 90 && tecnicaValida) color = "#00ff44";
+  else if (precision >= 75 && tecnicaValida) color = "#ffaa00";
+  else if (precision >= 60 && tecnicaValida) color = "#ff7700";
 
-    if (precision >= 90 && tecnicaValida) color = "#00ff44";      // Verde
-    else if (precision >= 75 && tecnicaValida) color = "#ffaa00"; // Amarillo
-    else if (precision >= 60 && tecnicaValida) color = "#ff7700"; // Naranja
-  
-    canvasCtx.beginPath();
-    canvasCtx.arc(codo.x * canvasElement.width, codo.y * canvasElement.height, 16, 0, 2 * Math.PI);
-    canvasCtx.fillStyle = color;
-    canvasCtx.shadowColor = color;
-    canvasCtx.shadowBlur = 15;
-    canvasCtx.fill();
-  }
-  
-  // === PROCESAR RESULTADOS DE MEDIA PIPE ===
-  function onResults(results) {
-    canvasElement.width = videoElement.videoWidth;
-    canvasElement.height = videoElement.videoHeight;
-  
-    canvasCtx.save();
-    canvasCtx.clearRect(0, 0, canvasElement.width, canvasElement.height);
-    canvasCtx.drawImage(results.image, 0, 0, canvasElement.width, canvasElement.height);
-  
-    if (results.poseLandmarks) {
-      const lm = results.poseLandmarks;
-      const visible = lm[11].visibility > 0.6 && lm[13].visibility > 0.6 && lm[15].visibility > 0.6;
-  
-      if (!visible) {
-        statusDiv.innerText = "No se detecta bien el cuerpo – acércate o mejora la luz.";
-        actualizarBarra(0);
-        return;
-      }
-  
-      detectarCurl(lm);
-  
-      drawConnectors(canvasCtx, lm, POSE_CONNECTIONS, {
-        color: '#00FF00',
-        lineWidth: 2
-      });
-  
-    } else {
-      statusDiv.innerText = "Esperando detección...";
+  canvasCtx.beginPath();
+  canvasCtx.arc(codo.x * canvasElement.width, codo.y * canvasElement.height, 16, 0, 2 * Math.PI);
+  canvasCtx.fillStyle = color;
+  canvasCtx.shadowColor = color;
+  canvasCtx.shadowBlur = 15;
+  canvasCtx.fill();
+}
+
+// === PROCESAR RESULTADOS DE MEDIA PIPE ===
+function onResults(results) {
+  canvasElement.width = videoElement.videoWidth;
+  canvasElement.height = videoElement.videoHeight;
+
+  canvasCtx.save();
+  canvasCtx.clearRect(0, 0, canvasElement.width, canvasElement.height);
+  canvasCtx.drawImage(results.image, 0, 0, canvasElement.width, canvasElement.height);
+
+  if (results.poseLandmarks) {
+    const lm = results.poseLandmarks;
+
+    // Validación: cuerpo visible con buena confianza
+    const cuerpoVisible = lm[11].visibility > 0.6 && lm[13].visibility > 0.6 && lm[15].visibility > 0.6;
+
+    if (!cuerpoVisible) {
+      statusDiv.innerText = "No se detecta bien el cuerpo – acércate o mejora la luz.";
       actualizarBarra(0);
+      haSubidoPerfecto = false;
+      posicionInicialDetectada = false;
+      return;
     }
-  
-    canvasCtx.restore();
+
+    detectarCurl(lm);
+
+    // Conexiones del esqueleto
+    drawConnectors(canvasCtx, lm, POSE_CONNECTIONS, {
+      color: '#00FF00',
+      lineWidth: 2
+    });
+
+  } else {
+    statusDiv.innerText = "Esperando detección...";
+    actualizarBarra(0);
+    haSubidoPerfecto = false;
+    posicionInicialDetectada = false;
   }
-  
-  // === CONFIGURACIÓN DE MEDIA PIPE POSE ===
-  const pose = new Pose({
-    locateFile: (file) => `https://cdn.jsdelivr.net/npm/@mediapipe/pose/${file}`
-  });
-  pose.setOptions({
-    modelComplexity: 1,
-    smoothLandmarks: true,
-    enableSegmentation: false,
-    minDetectionConfidence: 0.5,
-    minTrackingConfidence: 0.5
-  });
-  pose.onResults(onResults);
-  
-  // === INICIAR CÁMARA Y LOOP ===
-  navigator.mediaDevices.getUserMedia({ video: true }).then((stream) => {
-    videoElement.srcObject = stream;
-    videoElement.onloadedmetadata = () => {
-      videoElement.play();
-      const loop = async () => {
-        hiddenCanvas.width = videoElement.videoWidth;
-        hiddenCanvas.height = videoElement.videoHeight;
-        hiddenCtx.drawImage(videoElement, 0, 0, hiddenCanvas.width, hiddenCanvas.height);
-        await pose.send({ image: hiddenCanvas });
-        requestAnimationFrame(loop);
-      };
-      loop();
+
+  canvasCtx.restore();
+}
+
+// === CONFIGURAR MODELO MEDIA PIPE POSE ===
+const pose = new Pose({
+  locateFile: (file) => `https://cdn.jsdelivr.net/npm/@mediapipe/pose/${file}`
+});
+pose.setOptions({
+  modelComplexity: 1,
+  smoothLandmarks: true,
+  enableSegmentation: false,
+  minDetectionConfidence: 0.5,
+  minTrackingConfidence: 0.5
+});
+pose.onResults(onResults);
+
+// === INICIAR CÁMARA Y LOOP ===
+navigator.mediaDevices.getUserMedia({ video: true }).then((stream) => {
+  videoElement.srcObject = stream;
+
+  videoElement.onloadedmetadata = () => {
+    videoElement.play();
+
+    // Ocultar loader una vez la cámara esté activa
+    const loader = document.getElementById("loader");
+    if (loader) loader.style.display = "none";
+
+    const loop = async () => {
+      hiddenCanvas.width = videoElement.videoWidth;
+      hiddenCanvas.height = videoElement.videoHeight;
+      hiddenCtx.drawImage(videoElement, 0, 0, hiddenCanvas.width, hiddenCanvas.height);
+      await pose.send({ image: hiddenCanvas });
+      requestAnimationFrame(loop);
     };
-  }).catch((err) => {
-    alert("Error accediendo a la cámara: " + err.message);
-  });
+
+    loop();
+  };
+}).catch((err) => {
+  alert("Error accediendo a la cámara: " + err.message);
+  const loader = document.getElementById("loader");
+  if (loader) loader.style.display = "none";
+});

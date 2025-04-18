@@ -1,4 +1,4 @@
-/* === FONDO CON IMAGEN === */
+/* === RESET BASE === */
 body {
   margin: 0;
   padding: 0;
@@ -14,6 +14,7 @@ body {
     url("assets/images/IMG_7123.jpg") no-repeat center center fixed;
   background-size: cover;
   background-color: #1c1c1e;
+  animation: fadeInBody 1s ease-in-out;
 }
 
 /* === HERO TÍTULO === */
@@ -24,19 +25,19 @@ body {
   color: #ffffff;
   text-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
 }
-
 .hero-titulo h1 {
   font-size: 2.3em;
   font-weight: 900;
   margin: 0;
+  animation: fadeInTop 0.6s ease-out;
 }
-
 .hero-titulo p {
   font-size: 1em;
   margin-top: 6px;
+  animation: fadeInTop 0.9s ease-out;
 }
 
-/* === CONTENEDOR GLASS === */
+/* === GLASS UI === */
 .glass-container {
   background: rgba(255, 255, 255, 0.15);
   box-shadow: 0 8px 32px rgba(31, 38, 135, 0.37);
@@ -47,6 +48,7 @@ body {
   max-width: 500px;
   color: #1d1d1f;
   text-align: center;
+  animation: fadeInUp 0.8s ease-out;
 }
 
 /* === INSTRUCCIONES === */
@@ -59,18 +61,15 @@ body {
   text-align: left;
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
 }
-
 .banner-instrucciones h2 {
   font-size: 1.2em;
   margin-bottom: 10px;
   font-weight: 700;
 }
-
 .banner-instrucciones ol {
   padding-left: 18px;
   margin: 0;
 }
-
 .banner-instrucciones li {
   font-size: 0.95em;
   margin-bottom: 6px;
@@ -87,7 +86,13 @@ select {
   background-color: rgba(255, 255, 255, 0.7);
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
   width: 100%;
+  animation: fadeInUp 1s ease-out;
+  transition: all 0.3s ease-in-out;
 }
+select:hover {
+  box-shadow: 0 0 10px rgba(0, 255, 128, 0.3);
+}
+
 
 /* === VIDEO Y CANVAS === */
 video, canvas {
@@ -105,15 +110,14 @@ video, canvas {
   border-radius: 14px;
   overflow: hidden;
   position: relative;
+  animation: fadeInUp 1s ease-out;
 }
-
 #relleno {
   height: 100%;
   width: 0%;
   background: #00ff44;
   transition: width 0.2s ease;
 }
-
 #porcentaje {
   position: absolute;
   width: 100%;
@@ -125,25 +129,23 @@ video, canvas {
   color: #1d1d1f;
 }
 
-/* === TEXTO DE ESTADO === */
+/* === TEXTO Y REPETICIONES === */
 #status {
   font-weight: 700;
   font-size: 1.2em;
   margin-top: 18px;
   color: #00cc66;
   text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+  transition: all 0.3s ease-in-out;
 }
-
-/* === CONTADOR === */
 #contador {
   font-size: 2.5em;
   font-weight: 800;
   margin-top: 8px;
   color: #00cc66;
   text-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+  animation: glowReps 0.3s ease-in-out;
 }
-
-/* === DEBUG === */
 #debug {
   font-size: 1em;
   margin-top: 12px;
@@ -162,12 +164,76 @@ video, canvas {
   color: #00ff44;
   text-shadow: 0 0 10px rgba(0, 255, 0, 0.5);
   opacity: 1;
-  transition: all 1.2s ease-out;
+  animation: flotar 1.2s ease-out forwards;
   pointer-events: none;
   z-index: 999;
 }
 
-/* === MEDIA QUERY PARA MÓVIL === */
+/* === LOADER === */
+#loader {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100vh;
+  width: 100%;
+  background-color: #1c1c1e;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+}
+.dot {
+  width: 12px;
+  height: 12px;
+  margin: 0 6px;
+  background-color: #00ff44;
+  border-radius: 50%;
+  animation: bounce 1.4s infinite ease-in-out both;
+}
+.dot:nth-child(2) {
+  animation-delay: 0.2s;
+}
+.dot:nth-child(3) {
+  animation-delay: 0.4s;
+}
+
+/* === ANIMACIONES === */
+@keyframes flotar {
+  0% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+  100% { transform: translate(-50%, -120%) scale(1.3); opacity: 0; }
+}
+
+@keyframes fadeInUp {
+  0% { opacity: 0; transform: translateY(30px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+@keyframes fadeInTop {
+  0% { opacity: 0; transform: translateY(-20px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+@keyframes fadeInBody {
+  0% { opacity: 0; }
+  100% { opacity: 1; }
+}
+@keyframes glowReps {
+  0% { text-shadow: 0 0 10px #00ff44; transform: scale(1.05); }
+  100% { text-shadow: 0 0 0px transparent; transform: scale(1); }
+}
+@keyframes bounce {
+  0%, 80%, 100% { transform: scale(0); }
+  40% { transform: scale(1); }
+}
+@keyframes pulseGlow {
+  0% { transform: scale(1); text-shadow: 0 0 10px #00ff44; }
+  50% { transform: scale(1.05); text-shadow: 0 0 18px #00ff44; }
+  100% { transform: scale(1); text-shadow: 0 0 0px transparent; }
+}
+
+#status.actualizado {
+  animation: pulseGlow 0.4s ease-out;
+}
+
+/* === RESPONSIVE MOBILE === */
 @media (max-width: 600px) {
   body {
     padding: 16px;
@@ -203,3 +269,5 @@ video, canvas {
     font-size: 0.9em;
   }
 }
+
+

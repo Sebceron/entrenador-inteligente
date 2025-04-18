@@ -5,28 +5,32 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="description" content="Ceron.AI Coach - Entrenador virtual inteligente con visión por computadora en tiempo real. Sigue tus repeticiones y corrige tu técnica.">
   <meta name="author" content="Ceron.AI">
-  <meta name="theme-color" content="#1c1c1e" />
-  <meta property="og:title" content="Ceron.AI Coach - Tu entrenador con IA" />
-  <meta property="og:description" content="Entrena como un pro con visión por computadora en tiempo real y corrección técnica inteligente." />
-  <meta property="og:image" content="assets/images/preview.jpg" />
-  <meta property="og:type" content="website" />
   <title>Ceron.AI Coach - Entrenador Inteligente</title>
-  <link rel="stylesheet" href="style.css" />
+
+  <!-- Favicon & Estilos -->
   <link rel="icon" type="image/png" href="assets/images/favicon.png" />
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
 
-  <!-- TÍTULO PRINCIPAL -->
-  <header class="hero-titulo">
+  <!-- LOADER ANIMADO -->
+  <div id="loader" aria-hidden="true">
+    <div class="dot"></div>
+    <div class="dot"></div>
+    <div class="dot"></div>
+  </div>
+
+  <!-- ENCABEZADO -->
+  <header class="hero-titulo" role="banner">
     <h1>CERON.AI COACH</h1>
     <p>Tu entrenador personal potenciado por inteligencia artificial y visión por computadora</p>
   </header>
 
-  <!-- BLOQUE GLASS UI PRINCIPAL -->
+  <!-- CONTENIDO PRINCIPAL -->
   <main class="glass-container" role="main">
 
-    <!-- GUÍA DE USO -->
-    <section class="banner-instrucciones" aria-label="Guía de uso">
+    <!-- INSTRUCCIONES -->
+    <section class="banner-instrucciones" aria-label="Instrucciones de uso">
       <h2>¿Cómo usar esta app?</h2>
       <ol>
         <li>Permite el acceso a la cámara.</li>
@@ -38,35 +42,32 @@
       </ol>
     </section>
 
-    <!-- DROPDOWN DE EJERCICIOS -->
-    <label for="exerciseSelector" style="display:none;">Selecciona ejercicio</label>
+    <!-- SELECTOR DE EJERCICIO -->
     <select id="exerciseSelector" aria-label="Selector de ejercicio">
       <option value="curl">Curl de Bíceps</option>
     </select>
 
-    <!-- STREAMING Y VISUALIZACIÓN -->
+    <!-- VIDEO Y CANVAS -->
     <video id="video" autoplay playsinline style="display: none;"></video>
-    <canvas id="output"></canvas>
+    <canvas id="output" aria-hidden="true"></canvas>
     <canvas id="hiddenCanvas" style="display: none;"></canvas>
 
     <!-- BARRA DE TÉCNICA -->
-    <div id="barra-tecnica" aria-label="Precisión técnica">
+    <div id="barra-tecnica" aria-label="Nivel de técnica">
       <div id="relleno"></div>
       <div id="porcentaje">0%</div>
     </div>
 
     <!-- ESTADO Y REPETICIONES -->
     <div id="status" role="status">Esperando...</div>
-    <div id="contador" aria-live="polite">Reps: 0</div>
-    <div id="debug"></div>
+    <div id="contador" aria-label="Contador de repeticiones">Reps: 0</div>
+    <div id="debug" aria-hidden="true"></div>
 
   </main>
 
-  <!-- LIBRERÍAS DE MEDIAPIPE -->
+  <!-- SCRIPTS DE MEDIAPIPE Y LÓGICA -->
   <script src="https://cdn.jsdelivr.net/npm/@mediapipe/pose/pose.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils/drawing_utils.js"></script>
-
-  <!-- SCRIPT MODULAR -->
   <script type="module" src="script.js"></script>
 </body>
 </html>
