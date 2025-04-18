@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>AIfit Coach - Tu entrenador con IA</title>
-  <link rel="stylesheet" href="assets/style.css" />
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
 
@@ -14,6 +14,7 @@
     <p>Tu entrenador personal potenciado por inteligencia artificial y computer vision</p>
   </header>
 
+  <!-- CONTENEDOR GLASS -->
   <div class="glass-container">
 
     <!-- INSTRUCCIONES -->
@@ -34,7 +35,7 @@
       <option value="curl">Curl de Bíceps</option>
     </select>
 
-    <!-- CÁMARA OCULTA Y CANVAS VISUAL -->
+    <!-- VIDEO Y CANVAS -->
     <video id="video" autoplay playsinline style="display: none;"></video>
     <canvas id="output"></canvas>
     <canvas id="hiddenCanvas" style="display: none;"></canvas>
@@ -52,11 +53,11 @@
 
   </div>
 
-  <!-- === LIBRERÍAS DE MEDIA PIPE === -->
+  <!-- LIBRERÍAS DE MEDIA PIPE -->
   <script src="https://cdn.jsdelivr.net/npm/@mediapipe/pose/pose.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils/drawing_utils.js"></script>
 
-  <!-- === SCRIPT PRINCIPAL MODULAR === -->
+  <!-- SCRIPT PRINCIPAL MODULAR -->
   <script type="module" src="script.js"></script>
 </body>
 </html>

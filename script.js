@@ -15,7 +15,7 @@ let repeticiones = 0;
 let tiempoInicioFase = 0;
 let haSubidoPerfecto = false;
 // === AUDIO DE REPETICIÓN CORREGIDO ===
-const sonidoRepeticion = new Audio("assets/audio/rep_ok_voice.mp3");
+const sonidoRepeticion = new Audio("assets/Audio/rep_ok_voice.mp3");
 
 
 // === TIEMPO MÍNIMO ENTRE FASES ===
