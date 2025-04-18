@@ -72,84 +72,58 @@ function mostrarRepeticionVisual() {
 
 // === DETECCIÓN CURL BÍCEPS ===
 function detectarCurl(lm) {
-  const hombro = lm[11]; // LEFT_SHOULDER
-  const codo = lm[13];   // LEFT_ELBOW
-  const muñeca = lm[15]; // LEFT_WRIST
+  const hombro = lm[11];
+  const codo = lm[13];
+  const muñeca = lm[15];
 
   const angulo = calcularAngulo(hombro, codo, muñeca);
   let precision = 0;
 
-  // === Calcular precisión de técnica ===
-  if (angulo >= 45 && angulo <= 55) precision = 100;
-  else if (angulo > 55 && angulo <= 140) precision = 85;
-  else if (angulo > 30 && angulo <= 150) precision = 60;
-  else precision = 25;
+  // === Determinar precisión y color
+  if (angulo >= 45 && angulo <= 60) precision = 100;         // Contracción máxima
+  else if (angulo > 60 && angulo <= 140) precision = 85;     // Movimiento funcional
+  else if (angulo > 140 && angulo <= 165) precision = 60;    // Abajo seguro
+  else precision = 25;                                       // Peligroso (hiperextensión)
 
   actualizarBarra(precision);
 
-  const estaEnArribaPerfecto = angulo >= 40 && angulo <= 65;
-  const estaEnAbajoPerfecto = angulo >= 145 && angulo <= 165;
+  const estaArribaPerfecto = angulo >= 45 && angulo <= 60 && precision >= 90;
+  const estaAbajoSeguro = angulo >= 145 && angulo <= 165;
+  const estaEnHiperextension = angulo > 165;
 
-  // === Detectar posición inicial del codo para evaluar técnica ===
-  if (!posicionInicialDetectada && estaEnAbajoPerfecto && precision >= 60) {
-    posicionInicialDetectada = true;
-    posicionCodoInicial = { x: codo.x, y: codo.y };
-    statusDiv.innerText = "¡Posición inicial detectada! Comienza el curl.";
-  }
-
-  // === Medir desplazamiento del codo (penalización por técnica) ===
-  let movimientoCodo = 0;
-  let tecnicaValida = true;
-
-  if (posicionCodoInicial) {
-    const dx = Math.abs(codo.x - posicionCodoInicial.x);
-    const dy = Math.abs(codo.y - posicionCodoInicial.y);
-    movimientoCodo = Math.sqrt(dx * dx + dy * dy);
-
-    if (movimientoCodo > 0.08) {
-      tecnicaValida = false;
-      statusDiv.innerText = "Evita mover el codo – Técnica incorrecta.";
-    }
-  }
-
-  // === Mostrar métricas en panel de depuración ===
+  // === Mostrar en debug
   debugDiv.innerHTML = `
     <strong>Ángulo:</strong> ${Math.round(angulo)}°<br>
     <strong>Precisión:</strong> ${precision}%<br>
-    <strong>¿Arriba Perfecto?:</strong> ${estaEnArribaPerfecto ? 'Sí' : 'No'}<br>
-    <strong>¿Abajo Perfecto?:</strong> ${estaEnAbajoPerfecto ? 'Sí' : 'No'}<br>
-    <strong>Movimiento codo:</strong> ${movimientoCodo.toFixed(3)}<br>
-    <strong>Técnica válida:</strong> ${tecnicaValida ? 'Sí' : 'No'}<br>
+    <strong>¿Arriba Perfecto?:</strong> ${estaArribaPerfecto ? 'Sí' : 'No'}<br>
+    <strong>¿Abajo Seguro?:</strong> ${estaAbajoSeguro ? 'Sí' : 'No'}<br>
+    <strong>¿Hiperextendido?:</strong> ${estaEnHiperextension ? 'Sí' : 'No'}<br>
     <strong>Subida previa:</strong> ${haSubidoPerfecto ? 'Sí' : 'No'}
   `;
 
-  // === Lógica de repeticiones ===
-  if (posicionInicialDetectada && estaEnArribaPerfecto && tiempoEnFaseMinimo(400)) {
+  // === Iniciar fase subida
+  if (estaArribaPerfecto && tiempoEnFaseMinimo(400)) {
     haSubidoPerfecto = true;
     tiempoInicioFase = Date.now();
-    if (tecnicaValida) {
-      statusDiv.innerText = "Arriba perfecto – ahora baja";
-    }
+    statusDiv.innerText = "Mantén posición – baja controlado";
   }
 
-  if (posicionInicialDetectada && haSubidoPerfecto && estaEnAbajoPerfecto && tiempoEnFaseMinimo(400)) {
-    if (tecnicaValida && precision >= 60) {
-      repeticiones++;
-      contadorDiv.innerText = `Reps: ${repeticiones}`;
-      mostrarRepeticionVisual();
-      sonidoRepeticion.play();
-      statusDiv.innerText = "¡Repetición contada!";
-    } else {
-      statusDiv.innerText = "No se contó – técnica incorrecta.";
-    }
+  // === Fase bajada y contar
+  if (haSubidoPerfecto && estaAbajoSeguro && tiempoEnFaseMinimo(400)) {
+    repeticiones++;
+    contadorDiv.innerText = `Reps: ${repeticiones}`;
+    mostrarRepeticionVisual();
+    sonidoRepeticion.play();
+    statusDiv.innerText = "¡Repetición contada!";
     haSubidoPerfecto = false;
     tiempoInicioFase = Date.now();
   }
 
-  // === Círculo visual en el codo según técnica ===
-  let color = "#ff1a1a";
-  if (precision >= 90 && tecnicaValida) color = "#00ff44";
-  else if (precision >= 70 && tecnicaValida) color = "#ffaa00";
+  // === Feedback visual en el punto del codo
+  let color = "#ff1a1a"; // Rojo por defecto
+  if (estaEnHiperextension) color = "#ff0033"; // Rojo peligro
+  else if (precision >= 90) color = "#00ff44"; // Verde perfecta
+  else if (precision >= 70) color = "#ffaa00"; // Amarillo técnica aceptable
 
   canvasCtx.beginPath();
   canvasCtx.arc(codo.x * canvasElement.width, codo.y * canvasElement.height, 16, 0, 2 * Math.PI);
