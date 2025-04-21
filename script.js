@@ -33,6 +33,10 @@ function calcularAngulo(a, b, c) {
   return Math.acos(dot / (magAB * magCB)) * (180 / Math.PI);
 }
 
+
+
+
+
 function actualizarBarra(precision) {
   const relleno = document.getElementById("relleno");
   const porcentaje = document.getElementById("porcentaje");
@@ -68,6 +72,8 @@ function mostrarRepeticionVisual() {
 
   setTimeout(() => rep.remove(), 1500);
 }
+
+
 
 function detectarCurl(lm) {
   const hombro = lm[11];
@@ -120,6 +126,42 @@ function detectarCurl(lm) {
     <strong>Técnica válida:</strong> ${tecnicaValida ? 'Sí' : 'No'}<br>
     <strong>Estado subida previa:</strong> ${haSubidoPerfecto ? 'Sí' : 'No'}
   `;
+
+// Mostrar en pantalla usando canvas
+canvasCtx.font = '24px Arial';
+canvasCtx.shadowColor = 'black';
+canvasCtx.shadowBlur = 4;
+
+// Determinar el color dinámico de la precisión
+let colorPrecision = '#ff0000'; // rojo por defecto
+if (precision >= 85) {
+  colorPrecision = '#00ff00'; // verde
+} else if (precision >= 60) {
+  colorPrecision = '#ffff00'; // amarillo
+}
+
+// Determinar el color dinámico de la técnica
+let colorTecnica = tecnicaValida ? '#00ff00' : '#ff0000';
+
+// Determinar el color de la subida previa
+let colorSubida = haSubidoPerfecto ? '#00ff00' : '#ff0000';
+
+// Añadir la información de forma más visible
+canvasCtx.fillStyle = '#ffffff';
+canvasCtx.fillText(`Ángulo: ${Math.round(angulo)}°`, 20, 40);
+
+// Precisión con color dinámico
+canvasCtx.fillStyle = colorPrecision;
+canvasCtx.fillText(`Precisión: ${precision}%`, 20, 80);
+
+// Técnica válida con color dinámico
+canvasCtx.fillStyle = colorTecnica;
+canvasCtx.fillText(`Técnica válida: ${tecnicaValida ? 'Sí' : 'No'}`, 20, 120);
+
+// Subida previa con color dinámico
+canvasCtx.fillStyle = colorSubida;
+canvasCtx.fillText(`Subida previa: ${haSubidoPerfecto ? 'Sí' : 'No'}`, 20, 160);
+
 
   // Subida
   if (estaEnArribaPerfecto && tecnicaValida && tiempoEnFaseMinimo(400)) {

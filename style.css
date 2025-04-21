@@ -9,7 +9,7 @@ body {
   align-items: center;
   justify-content: flex-start;
   overflow-x: hidden;
-  background:
+  background: 
     linear-gradient(rgba(0, 0, 0, 0.35), rgba(0, 0, 0, 0.35)),
     url("assets/images/IMG_7123.jpg") no-repeat center center fixed;
   background-size: cover;
@@ -92,7 +92,6 @@ select {
 select:hover {
   box-shadow: 0 0 10px rgba(0, 255, 128, 0.3);
 }
-
 
 /* === VIDEO Y CANVAS === */
 video, canvas {
